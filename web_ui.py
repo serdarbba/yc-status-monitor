@@ -278,7 +278,6 @@ HTML_PAGE = """<!DOCTYPE html>
     <div class="status-box" id="statusBox">
       <div><span class="label">Status: </span><span id="statusDot" class="dot green"></span><span id="statusText" class="value">Monitoring</span></div>
       <div><span class="label">Last Check: </span><span id="lastCheck" class="value">-</span></div>
-      <div><span class="label">Content Hash: </span><span id="contentHash" class="value">-</span></div>
       <div><span class="label">Badge: </span><span id="keywords" class="value">-</span></div>
       <button type="button" class="btn" onclick="checkNow()" id="checkBtn">Check Now</button>
 

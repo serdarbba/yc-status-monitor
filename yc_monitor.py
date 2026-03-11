@@ -275,10 +275,7 @@ def check_once(config: dict) -> bool:
         save_state(current)
         msg = (
             f"YC Status Monitor Started\n\n"
-            f"Current Status: {badge}\n"
-            f"Page: {current['title']}\n"
-            f"Hash: {current['content_hash']}\n"
-            f"Time: {current['timestamp']}\n\n"
+            f"Current Status: {badge}\n\n"
             f"{get_sf_time_line()}"
         )
         send_telegram(config["telegram_token"], config["telegram_chat_id"], msg)
@@ -296,9 +293,6 @@ def check_once(config: dict) -> bool:
             msg += "THIS COULD BE GREAT NEWS!\n\n"
 
         msg += (
-            f"Page: {current['title']}\n"
-            f"Hash: {previous['content_hash']} -> {current['content_hash']}\n"
-            f"Time: {current['timestamp']}\n\n"
             f"Check: {YC_HOME}\n\n"
             f"{get_sf_time_line()}"
         )

@@ -83,19 +83,17 @@ def handle_check(config: dict):
     token = config["telegram_token"]
     chat_id = config["telegram_chat_id"]
 
-    send_message(token, chat_id, "Checking YC status now...")
-
     try:
         changed = check_once(config)
-        if not changed:
-            state = get_last_state()
-            badge = state.get("status_badge", "unknown") if state else "unknown"
-            ts = state.get("timestamp", "") if state else ""
+        # check_once already sends Telegram on first run or on change
+        # Only send extra message if no change and not first run
+        state = get_last_state()
+        if not changed and state:
+            badge = state.get("status_badge", "unknown") or "unknown"
             send_message(token, chat_id,
                 f"No changes detected.\n\n"
-                f"Current Status: <b>{badge}</b>\n"
-                f"Last Updated: {ts}\n\n"
-                f"SF Time: {get_sf_time()}"
+                f"Current Status: <b>{badge}</b>\n\n"
+                f"{get_sf_time()}"
             )
     except Exception as e:
         send_message(token, chat_id, f"Error checking status: {e}")
@@ -110,12 +108,8 @@ def handle_status(config: dict):
 
     if state:
         badge = state.get("status_badge", "unknown") or "unknown"
-        content_hash = state.get("content_hash", "-")
-        ts = state.get("timestamp", "-")
     else:
         badge = "No data yet"
-        content_hash = "-"
-        ts = "-"
 
     mode = bot_state["notify_mode"]
     if mode == "change_only":
@@ -131,12 +125,9 @@ def handle_status(config: dict):
 
     msg = (
         f"<b>YC Status Monitor</b>\n\n"
-        f"Status: <b>{badge}</b>\n"
-        f"Hash: <code>{content_hash}</code>\n"
-        f"Last Check: {ts}\n\n"
+        f"Status: <b>{badge}</b>\n\n"
         f"Session: {session_ok}\n"
         f"Notifications: {mode_text}\n\n"
-        f"<b>San Francisco (YC HQ)</b>\n"
         f"{get_sf_time()}"
     )
     send_message(token, chat_id, msg)
@@ -246,9 +237,8 @@ def auto_check_loop(config: dict):
                             config["telegram_token"],
                             config["telegram_chat_id"],
                             f"Scheduled Check - No changes\n\n"
-                            f"Status: <b>{badge}</b>\n"
-                            f"Time: {datetime.now(timezone.utc).isoformat()}\n\n"
-                            f"SF: {get_sf_time()}"
+                            f"Status: <b>{badge}</b>\n\n"
+                            f"{get_sf_time()}"
                         )
                 except Exception as e:
                     print(f"[ERROR] Auto-check failed: {e}")
