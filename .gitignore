@@ -1,5 +1,7 @@
 config.json
 .last_state
+.bot_state
+.browser_session/
 __pycache__/
 *.pyc
 .env
