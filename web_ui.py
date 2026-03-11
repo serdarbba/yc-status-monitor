@@ -304,6 +304,14 @@ HTML_PAGE = """<!DOCTYPE html>
             <label>Every 3 hours + on change</label>
           </div>
         </div>
+
+        <div style="margin-top:12px;">
+          <div class="radio-option" id="officeHoursOption" onclick="toggleOfficeHours(this)" style="cursor:pointer;">
+            <input type="checkbox" id="office_hours_only" style="accent-color:#fb923c;">
+            <label>Only during YC office hours (9 AM - 6 PM SF time)</label>
+          </div>
+        </div>
+
         <button type="button" class="btn btn-secondary" onclick="saveSettings()" id="saveSettingsBtn">Save Settings</button>
       </div>
 
@@ -397,6 +405,10 @@ HTML_PAGE = """<!DOCTYPE html>
           radio.checked = true;
           radio.closest('.radio-option').classList.add('selected');
         }
+        if (bs.office_hours_only) {
+          document.getElementById('office_hours_only').checked = true;
+          document.getElementById('officeHoursOption').classList.add('selected');
+        }
       }
       // Bot status
       if (cfg.bot_running) {
@@ -466,8 +478,16 @@ HTML_PAGE = """<!DOCTYPE html>
       });
   }
 
+  function toggleOfficeHours(el) {
+    var cb = document.getElementById('office_hours_only');
+    cb.checked = !cb.checked;
+    if (cb.checked) el.classList.add('selected');
+    else el.classList.remove('selected');
+  }
+
   function saveSettings() {
     const selected = document.querySelector('input[name="notify"]:checked').value;
+    const officeOnly = document.getElementById('office_hours_only').checked;
     let data = {};
     if (selected === 'change_only') {
       data = { notify_mode: 'change_only', auto_check_enabled: false };
@@ -475,6 +495,7 @@ HTML_PAGE = """<!DOCTYPE html>
       const mins = parseInt(selected.split('_')[1]);
       data = { notify_mode: 'interval', interval_minutes: mins, auto_check_enabled: true };
     }
+    data.office_hours_only = officeOnly;
     fetch('/api/settings', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},

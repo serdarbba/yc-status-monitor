@@ -48,6 +48,15 @@ def get_sf_time() -> str:
     return f"{time_str} ({date_str})\n{day} - {office}"
 
 
+def is_sf_office_hours() -> bool:
+    """Check if it's currently YC office hours in SF."""
+    now_utc = datetime.now(timezone.utc)
+    sf_time = now_utc + SF_OFFSET
+    day = sf_time.strftime("%A")
+    hour = sf_time.hour
+    return day not in ("Saturday", "Sunday") and 9 <= hour < 18
+
+
 def load_bot_state() -> dict:
     """Load bot notification settings."""
     defaults = {
@@ -227,6 +236,11 @@ def auto_check_loop(config: dict):
             # Re-check if still enabled
             bot_state = load_bot_state()
             if bot_state.get("auto_check_enabled") and bot_state.get("notify_mode") == "interval":
+                # Skip if office hours only and outside office hours
+                if bot_state.get("office_hours_only") and not is_sf_office_hours():
+                    print(f"[SKIP] Outside YC office hours, skipping check")
+                    continue
+
                 print(f"[AUTO] Scheduled check (every {interval} min)")
                 try:
                     changed = check_once(config)
