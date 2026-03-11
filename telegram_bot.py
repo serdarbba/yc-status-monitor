@@ -250,8 +250,7 @@ def auto_check_loop(config: dict):
                         send_message(
                             config["telegram_token"],
                             config["telegram_chat_id"],
-                            f"Scheduled Check - No changes\n\n"
-                            f"Status: <b>{badge}</b>\n\n"
+                            f"No changes\nStatus: <b>{badge}</b>\n\n"
                             f"{get_sf_time()}"
                         )
                 except Exception as e:

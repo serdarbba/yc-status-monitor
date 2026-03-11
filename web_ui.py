@@ -293,15 +293,15 @@ HTML_PAGE = """<!DOCTYPE html>
           </div>
           <div class="radio-option" onclick="selectOption(this, 'interval_15')">
             <input type="radio" name="notify" value="interval_15">
-            <label>Every 15 minutes + on change</label>
+            <label>Every 15 minutes</label>
           </div>
           <div class="radio-option" onclick="selectOption(this, 'interval_60')">
             <input type="radio" name="notify" value="interval_60">
-            <label>Every 1 hour + on change</label>
+            <label>Every 1 hour</label>
           </div>
           <div class="radio-option" onclick="selectOption(this, 'interval_180')">
             <input type="radio" name="notify" value="interval_180">
-            <label>Every 3 hours + on change</label>
+            <label>Every 3 hours</label>
           </div>
         </div>
 
@@ -390,7 +390,7 @@ HTML_PAGE = """<!DOCTYPE html>
       if (cfg.last_state) {
         var s = cfg.last_state;
         document.getElementById('lastCheck').textContent = s.timestamp ? new Date(s.timestamp).toLocaleTimeString() : '-';
-        document.getElementById('contentHash').textContent = s.content_hash || '-';
+        // content hash removed from UI
         document.getElementById('keywords').textContent = s.status_badge || 'none';
         document.getElementById('statusDot').className = 'dot green';
         document.getElementById('statusText').textContent = s.status_badge || 'Monitoring';
@@ -460,7 +460,7 @@ HTML_PAGE = """<!DOCTYPE html>
         btn.textContent = 'Check Now';
         if (res.ok) {
           document.getElementById('lastCheck').textContent = new Date().toLocaleTimeString();
-          document.getElementById('contentHash').textContent = res.hash || '-';
+          // content hash removed from UI
           document.getElementById('keywords').textContent = res.badge || res.statuses || 'none';
           if (res.changed) {
             document.getElementById('statusDot').className = 'dot yellow';
